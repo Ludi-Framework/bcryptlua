@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  spec:
+    strategy:
+      matrix:
+        include:
+          - lua: "5.4"
+            feature: lua54
+          - lua: "5.5"
+            feature: lua55
+          - lua: "luajit"
+            feature: luajit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      # Ubuntu has no liblua5.5-dev package yet, so the headers come from
+      # gh-actions-lua (installed under .lua/) and LUA_INC points mlua at
+      # them — in module mode only headers are needed, nothing is linked.
+      - uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: ${{ matrix.lua }}
+      - uses: leafo/gh-actions-luarocks@v5
+        with:
+          luarocksVersion: "3.13.0"
+      - run: luarocks install busted
+      - run: LUA_INC=$GITHUB_WORKSPACE/.lua/include cargo build --release --features ${{ matrix.feature }}
+      - run: ln -sf target/release/libbcryptlua_core.so bcryptlua_core.so
+      - run: busted
