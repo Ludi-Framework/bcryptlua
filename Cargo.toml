@@ -1,0 +1,26 @@
+[package]
+name = "bcryptlua"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "bcryptlua_core"
+crate-type = ["cdylib"]
+
+# No Lua version is enabled by default: luarocks-build-rust-mlua passes the
+# right feature for the Lua that LuaRocks runs under. For a local build,
+# pass it yourself:
+#
+#   cargo build --release --features lua55
+[features]
+module = ["mlua/module"]
+lua51 = ["mlua/lua51", "module"]
+lua52 = ["mlua/lua52", "module"]
+lua53 = ["mlua/lua53", "module"]
+lua54 = ["mlua/lua54", "module"]
+lua55 = ["mlua/lua55", "module"]
+luajit = ["mlua/luajit", "module"]
+
+[dependencies]
+mlua = { version = "0.11" }
+bcrypt = "0.17"
