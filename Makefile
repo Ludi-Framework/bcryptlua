@@ -16,4 +16,14 @@ dev:
 test: dev
 	busted
 
-.PHONY: dev test
+# Format Rust (rustfmt) and Lua (stylua) sources in place.
+fmt:
+	cargo fmt
+	stylua bcryptlua.lua spec/
+
+# Verify formatting without writing; fails if anything is out of style.
+fmt-check:
+	cargo fmt --check
+	stylua --check bcryptlua.lua spec/
+
+.PHONY: dev test fmt fmt-check
