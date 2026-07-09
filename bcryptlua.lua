@@ -27,16 +27,14 @@ function bcrypt.hash(password, cost)
         error("Password must be a string", 2)
     end
     if #password > MAX_PASSWORD_BYTES then
-        error(("Password exceeds bcrypt's 72-byte limit (%d bytes)")
-            :format(#password), 2)
+        error(("Password exceeds bcrypt's 72-byte limit (%d bytes)"):format(#password), 2)
     end
     if cost == nil then
         cost = DEFAULT_COST
     elseif type(cost) ~= "number" or cost % 1 ~= 0 then
         error("Cost must be an integer", 2)
     elseif cost < MIN_COST or cost > MAX_COST then
-        error(("Cost must be between %d and %d, got %d")
-            :format(MIN_COST, MAX_COST, cost), 2)
+        error(("Cost must be between %d and %d, got %d"):format(MIN_COST, MAX_COST, cost), 2)
     end
     return core.hash(password, cost)
 end
